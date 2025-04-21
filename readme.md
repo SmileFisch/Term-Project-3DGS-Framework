@@ -141,13 +141,16 @@ Below is the mapping of signals for motors A, B, C, and D to the Raspberry Pi G
     cd ~/ros2_sa/
     ros2 launch image_compress camera_image_compress.py
    ```
+   `Note`:
+    If you see warnings from the Pyrealsense Camera during runtime, simply rerun the launch command (ros2 launch ...). This is a known intermittent issue with the camera driver.
    `Note`: Rebuilding the container
 
     If you need to rebuild the container, you can use the Docker files located in the docker/ directory (or the docker/images/ subdirectory). Simply navigate there and run:
-
-    sudo docker build -t <image_name> ./docker/
-
-    Adjust the path and image name as needed to recreate or update your container.
+    ```bash
+      cd docker/         # or docker/images/
+      # Adjust the path and image name as needed to recreate or update your container.
+      sudo docker build -t <image_name> ./ 
+    ```
 4. **On a PC**  
     Make sure you’ve built and sourced the workspace, then:
    ```bash
