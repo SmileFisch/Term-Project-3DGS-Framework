@@ -126,6 +126,10 @@ Below is the mapping of signals for motors A, B, C, and D to the Raspberry Pi G
     cd ~/ros2_sa/
     ros2 launch controller combined_launch.launch.py
    ```
+   Then, in a second terminal window (on the same Pi), run:
+   ```bash 
+    ros2 launch controller control_gamepad_mecanum.launch
+   ```
 3. **Inside Docker on Raspberry Pi**  
    Before running the node, start and enter your Docker container:
 
