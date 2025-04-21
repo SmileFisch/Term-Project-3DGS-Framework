@@ -36,12 +36,16 @@ class ImageDecompressorNode(Node):
         self.declare_parameter("depth_image_topic", "/camera/decompressed_depth_image")
         # Default value for source file
         self.declare_parameter("source_file", "rgbd_dataset_Test.bag")
+        self.declare_parameter("parent_frame", "odom")
+        self.declare_parameter("child_frame", "camera_color_frame")
 
         self.compressed_color_topic = self.get_parameter("compressed_color_topic").value
         self.compressed_depth_topic = self.get_parameter("compressed_depth_topic").value
         self.color_image_topic = self.get_parameter("color_image_topic").value
         self.depth_image_topic = self.get_parameter("depth_image_topic").value
         self.source_file = self.get_parameter("source_file").value
+        self.parent_frame = self.get_parameter("parent_frame").value
+        self.child_frame = self.get_parameter("child_frame").value
 
         # Use source_file as the output directory name
         self.output_dir = self.source_file
@@ -388,8 +392,8 @@ class ImageDecompressorNode(Node):
 
             # Query the transform: odom -> camera_color_frame
             transform = self.tf_buffer.lookup_transform(
-                "odom",  # Parent frame
-                "camera_color_frame",  # Child frame
+                self.parent_frame,
+                self.child_frame,
                 ros_time,  # Use the image's timestamp for TF lookup
                 timeout=Duration(seconds=0.1),
             )
@@ -416,8 +420,8 @@ class ImageDecompressorNode(Node):
             # Publish extrinsics as a TransformStamped message
             extrinsics_msg = TransformStamped()
             extrinsics_msg.header.stamp = tf_time
-            extrinsics_msg.header.frame_id = "odom"
-            extrinsics_msg.child_frame_id = "camera_color_frame"
+            extrinsics_msg.header.frame_id = self.parent_frame
+            extrinsics_msg.child_frame_id = self.child_frame
             extrinsics_msg.transform = transform.transform
             self.extrinsics_pub.publish(extrinsics_msg)
 

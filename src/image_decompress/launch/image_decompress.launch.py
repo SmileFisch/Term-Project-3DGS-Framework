@@ -1,7 +1,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
-
 def generate_launch_description():
     return LaunchDescription(
         [
@@ -17,6 +16,8 @@ def generate_launch_description():
                         "color_image_topic": "/camera/decompressed_color_image",
                         "depth_image_topic": "/camera/decompressed_depth_image",
                         "source_file": "rgbd_dataset_Test",
+                        "parent_frame": "odom",
+                        "child_frame": "camera_color_frame",
                     }
                 ],
             )
