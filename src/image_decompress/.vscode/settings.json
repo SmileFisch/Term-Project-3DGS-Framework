@@ -1,0 +1,28 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/slam_toolbox_config/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/sensor_sync/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/odom/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/mux/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/imu_publisher/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/image_decompress/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/image_compress/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/driver_base/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/controller/lib/python3.8/site-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/slam_toolbox_config/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/sensor_sync/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/odom/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/mux/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/imu_publisher/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/image_decompress/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/image_compress/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/driver_base/lib/python3.8/site-packages",
+        "/home/tumi6/lsx_workspace/test/GSSLAM_Test/ros2_sa/install/controller/lib/python3.8/site-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ]
+}

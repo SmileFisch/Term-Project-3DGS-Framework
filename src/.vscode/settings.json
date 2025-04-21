@@ -1,0 +1,40 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/jcp/ros2_sa/build/sensor_sync",
+        "/home/jcp/ros2_sa/install/sensor_sync/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/odom",
+        "/home/jcp/ros2_sa/install/odom/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/mux",
+        "/home/jcp/ros2_sa/install/mux/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/imu_publisher",
+        "/home/jcp/ros2_sa/install/imu_publisher/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/image_decompress",
+        "/home/jcp/ros2_sa/install/image_decompress/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/image_compress",
+        "/home/jcp/ros2_sa/install/image_compress/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/driver_base",
+        "/home/jcp/ros2_sa/install/driver_base/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/controller",
+        "/home/jcp/ros2_sa/install/controller/lib/python3.8/site-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/jcp/ros2_sa/build/sensor_sync",
+        "/home/jcp/ros2_sa/install/sensor_sync/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/odom",
+        "/home/jcp/ros2_sa/install/odom/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/mux",
+        "/home/jcp/ros2_sa/install/mux/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/imu_publisher",
+        "/home/jcp/ros2_sa/install/imu_publisher/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/image_decompress",
+        "/home/jcp/ros2_sa/install/image_decompress/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/image_compress",
+        "/home/jcp/ros2_sa/install/image_compress/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/driver_base",
+        "/home/jcp/ros2_sa/install/driver_base/lib/python3.8/site-packages",
+        "/home/jcp/ros2_sa/build/controller",
+        "/home/jcp/ros2_sa/install/controller/lib/python3.8/site-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ]
+}

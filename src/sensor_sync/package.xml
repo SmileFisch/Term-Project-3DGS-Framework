@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>sensor_sync</name>
+  <version>0.1.0</version>
+  <description>A ROS 2 package to synchronize IMU, Odom, and LaserScan topics.</description>
+  <maintainer email="jincpan@gmail.com">jcp</maintainer>
+  <license>Apache-2.0</license>
+
+  <!-- Dependencies -->
+  <depend>rclpy</depend>
+  <depend>message_filters</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
