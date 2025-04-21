@@ -58,9 +58,9 @@ class ControlPublisher(Node):
         self.declare_parameter("spd_rate", 0.005)  # Speed limit
         self.declare_parameter("rot_limit", 0.002)  # Rotation speed limit
         self.declare_parameter("mode", "j")  # Default mode
-        self.declare_parameter("dist_limit", 0.005)  # Distance limit
+        self.declare_parameter("dist_limit", 0.004)  # Distance limit
         self.declare_parameter("angle_limit", 0.002)  # Angle limit
-        self.declare_parameter("wait_time", 0.1)  # Wait time between actions
+        self.declare_parameter("wait_time", 2.0)  # Wait time between actions
 
         # Get parameter values
         self.spd_rate = self.get_parameter("spd_rate").value
@@ -81,9 +81,12 @@ class ControlPublisher(Node):
             Float64MultiArray, "/controller/joy_stick", 10
         )
         self.mode_pub = self.create_publisher(String, "/controller/mode", 10)
+
         self.pub_time_period = 0.02
         self.timer = self.create_timer(self.pub_time_period, self.timer_callback)
+
         self.joy = Joystick()
+        
         qos_reliable = QoSProfile(depth=10, reliability=QoSReliabilityPolicy.RELIABLE)
         self.odom_sub = self.create_subscription(
             Odometry, "/odom", self.odom_callback, qos_reliable
@@ -94,20 +97,20 @@ class ControlPublisher(Node):
             None  # Used to record the timestamp when stop is triggered
         )
         # -- Initialize starting position and yaw for subsequent comparisons --
-        self.start_position = None
-        self.start_yaw = None
-
-        # Flags for stop event and automatic mode
+        # State variables
         self.stop_flag = False
         self.auto_flag = False
+        self.stop_start_time = None
+        self.start_position = None
+        self.start_yaw = None
+        self._wait_msg_printed = False
         self.last_mode = None
-        self.last_msg = None
+        self.last_vel = None  # stores [vx, vy, vtheta]
 
     def odom_callback(self, msg: Odometry) -> None:
         """检测里程变化，超过 dist_limit 就停车"""
         # if not (self.auto_flag and not self.stop_flag):
         #     return
-
         pos = msg.pose.pose.position
         if self.start_position is None:
             self.start_position = pos
@@ -129,13 +132,11 @@ class ControlPublisher(Node):
         """检测航向角变化，超过 angle_limit 就停车"""
         # if not (self.auto_flag and not self.stop_flag):
         #     return
-
         q = msg.orientation
         _, _, yaw = euler_from_quaternion((q.x, q.y, q.z, q.w))
         if self.start_yaw is None:
             self.start_yaw = yaw
             return
-
         # Normalize angle difference to [-π, π]
         delta = math.atan2(
             math.sin(yaw - self.start_yaw), math.cos(yaw - self.start_yaw)
@@ -165,43 +166,54 @@ class ControlPublisher(Node):
             self.get_logger().info(f"angle_limit decreased to {self.angle_limit:.4f}")
 
         # -- Buttons toggle auto_flag and control mode --
-        if self.joy.B():
+        if self.joy.B() and self.auto_flag:
             self.auto_flag = False
-        if self.joy.A():
+            self.get_logger().info("Switched to Manual Mode")
+        if self.joy.A() and not self.auto_flag:
             self.auto_flag = True
+            self.stop_flag = False
             self.start_position = None
             self.start_yaw = None
-            self.stop_flag = False
-        if self.joy.X():
+            self.get_logger().info("Switched to Auto Mode")
+
+        # -- Buttons switch input mode --
+        if self.joy.X() and self.mode != "j":
             self.mode = "j"
-        if self.joy.Y():
+            self.get_logger().info("Switched to Gamepad Control (j)")
+        if self.joy.Y() and self.mode != "l":
             self.mode = "l"
-        if self.joy.leftBumper():
+            self.get_logger().info("Switched to Algorithm Control (l)")
+        if self.joy.leftBumper() and self.mode != "k":
             self.mode = "k"
+            self.get_logger().info("Switched to Keyboard Control (k)")
 
         # Publish mode when it changes
         if self.mode != self.last_mode:
             self.get_logger().info(f"Current mode: {self.mode}")
-            self.last_mode = self.mode
             mode_msg = String()
             mode_msg.data = self.mode
             self.mode_pub.publish(mode_msg)
+            self.last_mode = self.mode
 
         now = self.get_clock().now()
         time_in_sec = now.seconds_nanoseconds()[0] + now.seconds_nanoseconds()[1] * 1e-9
-
         msg = Float64MultiArray()
 
         # -- Unified stop logic --
         if self.stop_flag:
             if self.stop_start_time is None:
                 self.stop_start_time = time_in_sec
+                self._wait_msg_printed = False
+
             elapsed = time_in_sec - self.stop_start_time
             if elapsed < self.wait_time:
+                if not self._wait_msg_printed:
+                    self.get_logger().info(
+                        f"Limit reached, waiting {elapsed:.2f}/{self.wait_time:.2f}s"
+                    )
+                    self._wait_msg_printed = True
+
                 msg.data = [0.0, 0.0, 0.0, time_in_sec]
-                self.get_logger().info(
-                    f"Limit reached, waiting {elapsed:.2f}/{self.wait_time:.2f}s"
-                )
                 self.publisher.publish(msg)
                 return
             # After wait, reset flags and references
@@ -209,7 +221,8 @@ class ControlPublisher(Node):
             self.stop_start_time = None
             self.start_position = None
             self.start_yaw = None
-            self.last_msg = None
+            # self.last_msg = None
+            self._wait_msg_printed = False
 
         if not self.auto_flag:
             # -- Manual joystick control branch --
@@ -220,22 +233,42 @@ class ControlPublisher(Node):
             x_l = max(-self.spd_rate, min(self.spd_rate, x_l))
             y_l = max(-self.spd_rate, min(self.spd_rate, y_l))
             msg.data = [x_l, y_l, x_r, time_in_sec]
+            new_vel = [x_l, y_l, x_r]
 
-            # Stop flags are set in odom/imu callbacks
+            is_same_vel = (new_vel == self.last_vel)
+            is_zero_vel = (new_vel == [0.0, 0.0, 0.0])
+            # 判断是否要发布：
+            #   1) 从来没发布过
+            #   2) 速度本身发生了变化
+            #   3) 速度虽然和上一次一样，但它不是“全零”情况（确保非零速度总能重发）
+            should_publish = (
+                self.last_vel is None
+                or not is_same_vel
+                or (is_same_vel and not is_zero_vel)
+            )
+
+            if should_publish:
+                self.get_logger().info(
+                    f"Current mode: {self.mode}, Joystick Publishing: {msg.data}"
+                )
+                self.publisher.publish(msg)
+                self.last_vel = new_vel
         else:
             # -- Automatic mode branch --
-            prev_x, prev_y, prev_rot = (
-                self.last_msg[:3] if self.last_msg else (0.0, 0.0, 0.0)
-            )
-            msg.data = [prev_x, prev_y, prev_rot, time_in_sec]
+            if not self.last_vel or self.last_vel == [0.0, 0.0, 0.0]:
+                # no previous non‑zero velocity → use default rotational motion
+                vx, vy, vt = 0.0, 0.0, self.rot_limit
+            else:
+                # resume the last non‑zero velocity
+                vx, vy, vt = self.last_vel
+
+            msg.data = [vx, vy, vt, time_in_sec]
             self.get_logger().debug(
-                f"Auto mode: continuing velocities [{prev_x}, {prev_y}, {prev_rot}]"
+                f"Auto mode: continuing velocities {msg.data}"
             )
             self.publisher.publish(msg)
-            self.last_msg = msg.data
-            return
 
-        # -- Publish (manual mode) if values changed --
+"""         # -- Publish (manual mode) if values changed --
         if self.last_msg is None or msg.data[:3] != self.last_msg[:3]:
             self.get_logger().info(
                 f"Current mode: {self.mode}, Joystick Publishing: {msg.data}"
@@ -243,7 +276,7 @@ class ControlPublisher(Node):
             self.publisher.publish(msg)
             self.last_msg = msg.data
 
-
+ """
 def main(args=None):
     rclpy.init(args=args)
     print("Publish Joystick Control Value")
