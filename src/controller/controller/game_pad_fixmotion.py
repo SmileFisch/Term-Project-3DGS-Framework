@@ -93,9 +93,6 @@ class ControlPublisher(Node):
         )
         self.imu_sub = self.create_subscription(Imu, "/imu", self.imu_callback, 10)
 
-        self.stop_start_time = (
-            None  # Used to record the timestamp when stop is triggered
-        )
         # -- Initialize starting position and yaw for subsequent comparisons --
         # State variables
         self.stop_flag = False
