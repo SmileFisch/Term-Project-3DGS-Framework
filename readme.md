@@ -17,6 +17,9 @@ A lightweight, real-time rendering system running on a Raspberry Pi–powered m
 This framework is ideal for mobile robotics vision, field surveying, augmented reality, and other scenarios where efficient 3D environment perception and visualization on edge devices are required.  
 
 ---
+Note: The source code for the core 3D GS Splatting implementation is currently proprietary and not publicly available. It will be open-sourced in the future—stay tuned for updates!
+
+---
 ## Author
 
 - **Name:** Jincheng Pan  
