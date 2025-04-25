@@ -38,6 +38,7 @@ def generate_launch_description():
         parameters=[
             {"wheel_diameter": 0.055},
             {"ticks_per_revolution": 4920},
+            # {"ticks_per_revolution": 260},
             {"gear_ratio": 20.0},
             {"max_rpm": 400},
             {"wheel_base": 0.22},

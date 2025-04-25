@@ -28,11 +28,11 @@ def generate_launch_description():
             # {'spd_rate': 0.005},    # Speed limit
             # {'rot_limit': 0.002},   # Rotation speed limit
             {"spd_rate": 0.004},  # Speed limit
-            {"rot_limit": 0.002},  # Rotation speed limit
+            {"rot_limit": 0.008},  # Rotation speed limit
             {"mode": "j"},  # 'j': joystick, 'k': keyboard, 'l': algorithm-based control
             {"dist_limit": 0.002},
-            {"angle_limit": 0.001},
-            {"wait_time": 2.0},
+            {"angle_limit": 0.002},
+            {"wait_time": 6.0},
         ],
     )
     # key_board_node = Node(
@@ -56,7 +56,7 @@ def generate_launch_description():
     #     output='screen',
     #     parameters=[
     #         {'wheel_diameter': 0.055},
-    #         {'ticks_per_revolution': 4920},
+    #         {'ticks_per_revolution': 4920}, # 246
     #         {'gear_ratio': 20.0},
     #         {'max_rpm': 400},
     #         {'wheel_base': 0.22},

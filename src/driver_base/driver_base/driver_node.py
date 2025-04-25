@@ -73,16 +73,17 @@ class CarDriver(Node):
     def init_car_controller(self, wheel_diameter, ticks_per_revolution, gear_ratio, max_rpm):
         # 初始化四个电机（带编码器）
         motors = [
+            # 左前轮
             Motor(
                 pwm_pin=12,
                 dir1_pin=1,
                 dir2_pin=27,
                 enc_a_pin=25,
                 enc_b_pin=17,
-                # compensate_rate=0.99446,
-                compensate_rate=0.9599,
+                compensate_rate=0.99446,
+                # compensate_rate=0.9599,
             ),
-            # 左前轮
+            # 左后轮
             Motor(
                 pwm_pin=19,
                 dir1_pin=20,
@@ -92,7 +93,7 @@ class CarDriver(Node):
                 # compensate_rate=1.00000,
                 compensate_rate=1.00000,
             ),
-            # 左后轮
+            # 右前轮
             Motor(
                 pwm_pin=18,
                 dir1_pin=14,
@@ -100,9 +101,10 @@ class CarDriver(Node):
                 enc_a_pin=23,
                 enc_b_pin=24,
                 # compensate_rate=1.01992,
-                compensate_rate=1.0088,
+                # compensate_rate=1.0088,
+                compensate_rate=1.38,  
             ),
-            # 右前轮
+            # 右后轮
             Motor(
                 pwm_pin=13,
                 dir1_pin=6,
@@ -110,9 +112,8 @@ class CarDriver(Node):
                 enc_a_pin=0,
                 enc_b_pin=11,
                 # compensate_rate=0.93280,
-                compensate_rate=0.9287,
+                compensate_rate=0.9480,
             ),
-            # 右后轮
         ]
 
         return CarController(motors, wheel_diameter, ticks_per_revolution, gear_ratio, max_rpm)

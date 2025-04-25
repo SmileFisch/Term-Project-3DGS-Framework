@@ -146,7 +146,7 @@ class ImageDecompressorNode(Node):
             depth_arrival_time_sec = depth_arrival_time.sec + depth_arrival_time.nanosec * 1e-9
 
             # Check if timestamps match within the threshold
-            if abs(color_stamp - depth_stamp) <= 0.01:
+            if abs(color_stamp - depth_stamp) <= 0.02:
                 # If timestamps match, publish and remove from cache
                 self.color_image_cache.popleft()
                 self.depth_image_cache.popleft()
@@ -287,7 +287,7 @@ class ImageDecompressorNode(Node):
             timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
             filename = f"{timestamp:.6f}.png"
             filepath = os.path.join(save_dir, filename)
-            # cv2.imwrite(filepath, cv_image)
+            cv2.imwrite(filepath, cv_image)
 
             # Log and record the image file path
             file_list.write(f"{timestamp:.6f} {file_dir}/{filename}\n")
@@ -402,6 +402,10 @@ class ImageDecompressorNode(Node):
             tf_time = transform.header.stamp  # TF's timestamp
             tf_ros_time = rclpy.time.Time.from_msg(tf_time)
             tf_seconds = tf_ros_time.nanoseconds * 1e-9
+            
+            # tf_ros_time = rclpy.time.Time.from_msg(tf_time)
+            # tf_seconds = tf_ros_time.seconds + tf_ros_time.nanoseconds * 1e-9
+
 
             # Write transform to file
             tx = transform.transform.translation.x

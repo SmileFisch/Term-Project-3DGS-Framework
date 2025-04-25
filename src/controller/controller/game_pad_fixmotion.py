@@ -91,7 +91,7 @@ class ControlPublisher(Node):
         self.odom_sub = self.create_subscription(
             Odometry, "/odom", self.odom_callback, qos_reliable
         )
-        self.imu_sub = self.create_subscription(Imu, "/imu", self.imu_callback, 10)
+        # self.imu_sub = self.create_subscription(Imu, "/imu", self.imu_callback, 10)
 
         # -- Initialize starting position and yaw for subsequent comparisons --
         # State variables
@@ -104,46 +104,82 @@ class ControlPublisher(Node):
         self.last_mode = None
         self.last_vel = None  # stores [vx, vy, vtheta]
 
+    # def odom_callback(self, msg: Odometry) -> None:
+    #     """检测里程变化，超过 dist_limit 就停车"""
+    #     # if not (self.auto_flag and not self.stop_flag):
+    #     #     return
+    #     pos = msg.pose.pose.position
+    #     if self.start_position is None:
+    #         self.start_position = pos
+    #         return
+
+    #     dx = pos.x - self.start_position.x
+    #     dy = pos.y - self.start_position.y
+    #     dist = math.hypot(dx, dy)
+    #     if dist >= self.dist_limit:
+    #         self.get_logger().info(
+    #             f"Distance limit reached: {dist:.4f} >= {self.dist_limit:.4f}"
+    #         )
+    #         self.stop_flag = True
+    #         # Reset starting reference for next auto cycle
+    #         self.start_position = None
+    #         self.start_yaw = None
+
+    # def imu_callback(self, msg: Imu) -> None:
+    #     """检测航向角变化，超过 angle_limit 就停车"""
+    #     # if not (self.auto_flag and not self.stop_flag):
+    #     #     return
+    #     q = msg.orientation
+    #     _, _, yaw = euler_from_quaternion((q.x, q.y, q.z, q.w))
+    #     if self.start_yaw is None:
+    #         self.start_yaw = yaw
+    #         return
+    #     # Normalize angle difference to [-π, π]
+    #     delta = math.atan2(
+    #         math.sin(yaw - self.start_yaw), math.cos(yaw - self.start_yaw)
+    #     )
+    #     if abs(delta) >= self.angle_limit:
+    #         self.get_logger().info(
+    #             f"Angle limit reached: {abs(delta):.4f} >= {self.angle_limit:.4f}"
+    #         )
+    #         self.stop_flag = True
+    #         # Reset starting reference for next auto cycle
+    #         self.start_position = None
+    #         self.start_yaw = None
     def odom_callback(self, msg: Odometry) -> None:
-        """检测里程变化，超过 dist_limit 就停车"""
-        # if not (self.auto_flag and not self.stop_flag):
-        #     return
+        """检测里程变化，超过 dist_limit 就停车, 检测航向角变化，超过 angle_limit 就停车"""
         pos = msg.pose.pose.position
+        q = msg.pose.pose.orientation
+        _, _, yaw = euler_from_quaternion((q.x, q.y, q.z, q.w))
+
+        # 第一次进来，记录起点位置和起始朝向
         if self.start_position is None:
             self.start_position = pos
+            self.start_yaw = yaw
             return
 
+        # 1) 距离检测
         dx = pos.x - self.start_position.x
         dy = pos.y - self.start_position.y
         dist = math.hypot(dx, dy)
         if dist >= self.dist_limit:
             self.get_logger().info(
-                f"Distance limit reached: {dist:.4f} >= {self.dist_limit:.4f}"
+                f"Distance limit reached: {dist:.4f} ≥ {self.dist_limit:.4f}"
             )
             self.stop_flag = True
-            # Reset starting reference for next auto cycle
             self.start_position = None
             self.start_yaw = None
 
-    def imu_callback(self, msg: Imu) -> None:
-        """检测航向角变化，超过 angle_limit 就停车"""
-        # if not (self.auto_flag and not self.stop_flag):
-        #     return
-        q = msg.orientation
-        _, _, yaw = euler_from_quaternion((q.x, q.y, q.z, q.w))
-        if self.start_yaw is None:
-            self.start_yaw = yaw
-            return
-        # Normalize angle difference to [-π, π]
-        delta = math.atan2(
-            math.sin(yaw - self.start_yaw), math.cos(yaw - self.start_yaw)
+        # 2) 航向角检测
+        delta_yaw = math.atan2(
+            math.sin(yaw - self.start_yaw),
+            math.cos(yaw - self.start_yaw)
         )
-        if abs(delta) >= self.angle_limit:
+        if abs(delta_yaw) >= self.angle_limit:
             self.get_logger().info(
-                f"Angle limit reached: {abs(delta):.4f} >= {self.angle_limit:.4f}"
+                f"Angle limit reached: {math.degrees(abs(delta_yaw)):.1f}° ≥ {math.degrees(self.angle_limit):.1f}°"
             )
             self.stop_flag = True
-            # Reset starting reference for next auto cycle
             self.start_position = None
             self.start_yaw = None
 
