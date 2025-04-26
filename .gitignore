@@ -1,5 +1,8 @@
 /docker/image.tar
-/videos/EnvironmentDemo.tar.xz
-/videos/SA_Videos.tar.xz
-/datasets/SA_Dataset.tar.xz
-
+/datasets/rgbd_indoor_daytime.zip
+/datasets/rgbd_indoor_night.zip
+/videos/RealtimeScene_Indoor_Night_3DGSResult.mp4
+/videos/RealtimeSecene_Indoor_Daytime_3DGSResult.mp4
+/videos/StaticScene_Indoor_Night_3DGSResult.mp4
+/videos/StaticScene_Indoor_Daytime_3DGSResult.mp4
+/videos/EnvironmentDemo.mp4

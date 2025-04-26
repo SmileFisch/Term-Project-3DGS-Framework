@@ -29,18 +29,6 @@ Note: The source code for the core 3D GS Splatting implementation is currently p
 
 # Instruction File
 
-This repository provides launch commands for the controller and image compression/decompression nodes. You can run them:
-
-- **Bare‑metal** on a Raspberry Pi  
-- **Inside Docker** on the Pi  
-- **On a PC**
-
-Make sure you’ve:
-
-1. Built the workspace with `colcon build`  
-2. Sourced your ROS 2 environment before running any launch  
-
----
 
 ## 1. Prerequisites
 
@@ -114,7 +102,30 @@ Below is the mapping of signals for motors A, B, C, and D to the Raspberry Pi G
 |       | E4B (Encoder B)    | E4B               | GPIO11            |
 
 ---
+### 2.2 Camera Calibration
 
+The Pyrealsense D435i camera was calibrated with the following parameters:
+
+- **Image resolution:** 640 × 480  
+- **Depth scale:** 1000.0  
+
+**Intrinsic parameters** (no distortion):
+
+| Parameter   | Value    |
+| ----------- | -------: |
+| fx (focal x) | 608.046 |
+| fy (focal y) | 607.629 |
+| cx (principal point x) | 323.124 |
+| cy (principal point y) | 251.270 |
+| k₁ (radial) | 0.0     |
+| k₂ (radial) | 0.0     |
+| k₃ (radial) | 0.0     |
+| p₁ (tangential) | 0.0  |
+| p₂ (tangential) | 0.0  |
+| **Distorted?** | **False** |
+
+These parameters are used to project depth pixels into real-world coordinates and to undistort the RGB image before any computer-vision processing.  
+---
 
 ## 3. Quick‑Start Commands
 
@@ -165,6 +176,15 @@ Below is the mapping of signals for motors A, B, C, and D to the Raspberry Pi G
     source install/setup.bash
     ros2 launch image_decompress image_decompress_node.py
    ```
-## 4. SLAM & Nav2 Support
+## 4. Demo
+
+Below is a showcase of the real-time 3D GS reconstruction results using this testing framework.  
+
+![Live 3D GS Splatting Demo](docs/images/demo.gif)
+
+> **Video:** [Watch the full demo](https://your.video.link)
+
+---
+## 5. SLAM & Nav2 Support
 
 This repository also includes configuration examples for SLAM-based mapping (using SLAM Toolbox) and autonomous navigation (using Nav2). Install the corresponding packages and launch the provided SLAM and Nav2 configuration files for testing.
