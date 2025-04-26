@@ -102,7 +102,7 @@ class CarDriver(Node):
                 enc_b_pin=24,
                 # compensate_rate=1.01992,
                 # compensate_rate=1.0088,
-                compensate_rate=1.38,  
+                compensate_rate=1.18,  
             ),
             # 右后轮
             Motor(
@@ -112,7 +112,7 @@ class CarDriver(Node):
                 enc_a_pin=0,
                 enc_b_pin=11,
                 # compensate_rate=0.93280,
-                compensate_rate=0.9480,
+                compensate_rate=0.9680,
             ),
         ]
 

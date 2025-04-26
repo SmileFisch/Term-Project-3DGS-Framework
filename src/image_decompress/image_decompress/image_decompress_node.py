@@ -78,10 +78,11 @@ class ImageDecompressorNode(Node):
         )
 
         # Initialize caches
-        self.color_image_cache = deque()  # Cache for color images
-        self.depth_image_cache = deque()  # Cache for depth images
-        # Maximum allowable time difference for synchronization (in seconds)
-        self.cache_timeout = 0.1
+        self.color_image_cache = deque(maxlen=200)
+        self.depth_image_cache = deque(maxlen=200)
+
+        # # Maximum allowable time difference for synchronization (in seconds)
+        # self.cache_timeout = 0.1
 
         # TF buffer and listener
         self.tf_buffer = Buffer(cache_time=Duration(seconds=20.0))

@@ -32,7 +32,7 @@ def generate_launch_description():
             {"mode": "j"},  # 'j': joystick, 'k': keyboard, 'l': algorithm-based control
             {"dist_limit": 0.002},
             {"angle_limit": 0.002},
-            {"wait_time": 6.0},
+            {"wait_time": 1.0},
         ],
     )
     # key_board_node = Node(

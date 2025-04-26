@@ -169,7 +169,7 @@ class ControlPublisher(Node):
             self.stop_flag = True
             self.start_position = None
             self.start_yaw = None
-
+            return  # ← 重置后立即退出，避免后面用到 None
         # 2) 航向角检测
         delta_yaw = math.atan2(
             math.sin(yaw - self.start_yaw),
@@ -182,6 +182,7 @@ class ControlPublisher(Node):
             self.stop_flag = True
             self.start_position = None
             self.start_yaw = None
+            return
 
     def timer_callback(self) -> None:
         # -- Use D-pad to adjust dist_limit and angle_limit dynamically --
@@ -312,15 +313,22 @@ class ControlPublisher(Node):
  """
 def main(args=None):
     rclpy.init(args=args)
-    print("Publish Joystick Control Value")
     pub = ControlPublisher()
 
-    rclpy.spin(pub)
-    # pub.publishment()
-
-    pub.destroy_node()
-    rclpy.shutdown()
-
+    try:
+        rclpy.spin(pub)
+    except KeyboardInterrupt:
+        pub.get_logger().info("KeyboardInterrupt -> 停止机器人")
+    finally:
+        # 发布一次零速度
+        zero = Float64MultiArray()
+        now = pub.get_clock().now().seconds_nanoseconds()[0] + \
+              pub.get_clock().now().seconds_nanoseconds()[1] * 1e-9
+        zero.data = [0.0, 0.0, 0.0, now]
+        pub.publisher.publish(zero)
+        # pub.get_logger().info("已发布零速度，关闭节点")
+        pub.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
