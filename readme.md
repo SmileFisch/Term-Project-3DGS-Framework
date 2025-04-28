@@ -179,10 +179,7 @@ These parameters are used to project depth pixels into real-world coordinates an
 ## 4. Demo
 
 Below is a showcase of the real-time 3D GS reconstruction results using this testing framework.  
-
-![Live 3D GS Splatting Demo](docs/images/demo.gif)
-
-> **Video:** [Watch the full demo](https://your.video.link)
+> **Video:** [Watch the full demo](https://drive.google.com/file/d/1mxX6LuDsutT9cVUiRpzubjpCRlxMNFL6/view?usp=drive_link)
 
 ---
 ## 5. SLAM & Nav2 Support
