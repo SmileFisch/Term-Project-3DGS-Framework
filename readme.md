@@ -58,7 +58,7 @@ Your machines should meet the following software requirements:
 
 #### Motor Driver Connection
 
-![Motor Driver Wiring](docs/images/motor_driver_wiring.png)
+![Motor Driver Wiring](./docs/images/motor_driver_wiring.png)
 
 *Figure 1: Motor driver control board ↔ Raspberry Pi GPIO wiring.*
 
@@ -66,7 +66,7 @@ Your machines should meet the following software requirements:
 
 #### Raspberry Pi Pinout
 
-![Raspberry Pi Pinout](docs/images/rpi_pinout.png)
+![Raspberry Pi Pinout](./docs/images/rpi_pinout.png)
 
 *Figure 2: Raspberry Pi 40‑pin header pinout.*
 
