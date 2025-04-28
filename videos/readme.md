@@ -3,7 +3,7 @@
 The reconstruction results demonstration video is hosted on Google Drive:  
 - **RealtimeScene_Indoor_Night_3DGSResult Video**  
   - **Description**: Highlights the real-time 3DGS reconstruction process in an indoor night scene by continuously sampling and filtering image data on-the-fly from a moving robotic vehicle.   
-  - **Download Link**👉: [RealtimeScene_Indoor_Night_3DGSResult Video](https://drive.google.com/file/d/1mxX6LuDsutT9cVUiRpzubjpCRlxMNFL6/view?usp=drive_link)
+  - **Download Link**👉: [RealtimeScene_Indoor_Night_3DGSResult Video](https://drive.google.com/file/d/1dgs55lNiU7OHc-BPhhUV7W5ns43vKdBZ/view?usp=drive_link)
 
 - **StaticScene_Indoor_Night_3DGSResult Video**  
   - **Description**: Showcases 3DGS reconstruction results using the complete indoor night dataset collected by a robotic vehicle.  
